@@ -9,8 +9,10 @@
     "page": "./bin/createPage.js"
   },
   "dependencies": {
+    "chalk": "^3.0.0",
     "commander": "^4.0.0",
     "ejs": "^2.7.2",
-    "inquirer": "^7.0.0"
+    "inquirer": "^7.0.0",
+    "rxjs": "^6.5.3"
   }
 }

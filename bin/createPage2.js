@@ -8,7 +8,15 @@ const ejs = require('ejs');
 const Rx = require('rxjs');
 const cwd =process.cwd();
 
-const isUsingInValiedProject = require('../lib/isUsingInValiedProject.js');
+let prompts = new Rx.Subject();
+Inquirer.prompt(prompts);
+
+// At some point in the future, push new questions
+prompts.next({ /* question... */ });
+prompts.next({ /* question... */ });
+
+// When you're done
+prompts.complete();
 
 
 
@@ -27,86 +35,40 @@ const isUsingInValiedProject = require('../lib/isUsingInValiedProject.js');
  * editor:开启vim 可以自行编辑大段内容；
  *
  * **/
-
+//
 // //确保该命令在项目目录中运行
-if(!isUsingInValiedProject()){
-    return false;
-}
+// const canUseProjects = ['goodme-book'];
+// const packageDir = path.resolve(cwd,'./package.json');
+//
+// const packageFileIsExists = fs.existsSync(packageDir);
+// if(packageFileIsExists){
+//     const packageFile = fs.readFileSync(packageDir,'utf-8');
+//     const projectName = JSON.parse(packageFile).name;
+//     if(canUseProjects.indexOf(projectName) <0){
+//         console.log(`请在以下项目中使用该命令：${canUseProjects.join('、')}`);
+//         return;
+//     }
+// }else{
+//     console.log(`请在以下项目中使用该命令：${canUseProjects.join('、')}`);
+//     return;
+// }
 
 const typePage = async ()=>{
     return new Promise((resolve,reject)=>{
-
+        return Inquirer.prompt([
+            {
+                type:'input',//用户输入 string
+                name:'modelName123',
+                message:'123123)：',
+            }
+        ]).then((data)=>{
+            resolve(data);
+        })
     })
 }
 
 
-const createPage = ()=>{
-    let prompts = new Rx.Subject()
-    Inquirer.prompt(prompts).then((data)=>{
-        console.log('data 12312:',data);
-    })
-    prompts.next({
-        type:'expand',
-        name:'type12',
-        message:'请选择你要创建的页面类型',
-        default:'l',
-        choices:[
-            {
-                key: 'l',
-                name: '列表页',
-                value: 'list'
-            },
-            {
-                key: 'm',
-                name: '多Tab列表页',
-                value: 'multi-list'
-            }
-        ]
-    });
-
-    prompts.complete()
-}
-
-
-let prompts = new Rx.Subject();
-Inquirer.prompt(prompts).then((data)=>{
-    console.log('data:',data);
-    return data;
-}).then(async (data)=>{
-    console.log('data---:',data);
-    let prompts = new Rx.Subject()
-    let a = Inquirer.prompt(prompts)
-
-    prompts.next({
-        type:'expand',
-        name:'type12',
-        message:'请选择你要创建的页面类型',
-        default:'l',
-        choices:[
-            {
-                key: 'l',
-                name: '列表页',
-                value: 'list'
-            },
-            {
-                key: 'm',
-                name: '多Tab列表页',
-                value: 'multi-list'
-            }
-        ]
-    });
-
-    prompts.complete()
-
-    return a;
-}).then((data)=>{
-    console.log('data1:',data);
-});
-
-
-// At some point in the future, push new questions
-
-prompts.next(
+const config =[
     {
         type:'input',//用户输入 string
         name:'modelName',
@@ -153,78 +115,34 @@ prompts.next(
                     console.log(' ：该model名称已存在，请更换其他名称');
                     resolve(false);
                 }
+
+                // let data = await typePage(Inquirer);
+                // prevValue.aaa=data;
+
+                console.log('prevValue:',prevValue,rest);
+
                 resolve(true)
             })
         },
-    }
-);
-
-
-prompts.next({
-    type:'expand',
-    name:'type',
-    message:'请选择你要创建的页面类型',
-    default:'l',
-    choices:[
-        {
-            key: 'l',
-            name: '列表页',
-            value: 'list'
-        },
-        {
-            key: 'm',
-            name: '多Tab列表页',
-            value: 'multi-list'
-        }
-    ]
-});
-
-prompts.complete();
-
-//是否开启 简单模式
-prompts.next(
+    },
     {
-        type:'confirm',//  boolean  二选一
-        name:'simple',
-        message:'是否开启简单模式（简单模式:不需要回调函数自行封装子组件）',
-        when:(prevValue)=>{ // 决定当前选项是否需要让用户处理 相当于 if 判断
-            return new Promise((resolve,reject)=>{
-                console.log('when prevValue:',prevValue);
-                // prompts.next(
-                //     {
-                //         type:'confirm',//  boolean  二选一
-                //         name:'simple1',
-                //         message:'123是否开启简单模式（简单模式:不需要回调函数自行封装子组件）',
-                //     }
-                // );
-                // prompts.complete();
-                resolve(true);
-            })
-
-        },
-    }
-);
-
-
-//页面注释
-prompts.next(
-    {
-        type:'editor',
-        name:'comments',
-        message:'请输入页面注释',
-    }
-);
-// prompts.complete();
-//
-
-
-
-
-
-
-
-
-const config =[
+        type:'expand',
+        name:'type',
+        message:'请选择你要创建的页面类型',
+        default:'l',
+        choices:[
+            {
+                key: 'l',
+                name: '列表页',
+                value: 'list'
+            },
+            {
+                key: 'm',
+                name: '多Tab列表页',
+                value: 'multi-list'
+            }
+        ]
+    },
 
     // {
     //     type:'checkbox',// 多选
@@ -283,37 +201,33 @@ const config =[
     }
 ];
 
+Inquirer.prompt(config).then((_answers)=>{
+
+    const answers = {
+        user:{
+            time:getNow(),
+            hostname:os.hostname()
+        },
+        ..._answers
+    }
 
 
-//
-//
-// Inquirer.prompt(config).then((_answers)=>{
-//
-//     const answers = {
-//         user:{
-//             time:getNow(),
-//             hostname:os.hostname()
-//         },
-//         ..._answers
-//     }
-//
-//
-//     console.log('页面配置参数如下:\n',chalk.bgRed.black(JSON.stringify(answers,null,2)));
-//     //
-//     // //页面
-//     // const pageTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageTemplate.ejs'),'utf-8');
-//     // let pageResult = ejs.render(pageTtemplate, answers);
-//     // fs.writeFileSync(path.resolve(cwd,`./src/routes/_template/template.js`),pageResult,'utf-8')
-//     //
-//     // //model
-//     // const modelTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageListModel.ejs'),'utf-8')
-//     // let modelResult = ejs.render(modelTtemplate, answers);
-//     // fs.writeFileSync(path.resolve(cwd,`./src/models/_template/template.js`),modelResult,'utf-8')
-//     //
-//     //
-//     // console.log(`\n\nmodel 和页面已经生成并分别放置于 src/models/template  src/routes/template 目录下 \n根据model配置，在config.js中添加接口配置 \n,配置router`);
-// });
-//
+    console.log('页面配置参数如下:\n',chalk.bgRed.black(JSON.stringify(answers,null,2)));
+    //
+    // //页面
+    // const pageTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageTemplate.ejs'),'utf-8');
+    // let pageResult = ejs.render(pageTtemplate, answers);
+    // fs.writeFileSync(path.resolve(cwd,`./src/routes/_template/template.js`),pageResult,'utf-8')
+    //
+    // //model
+    // const modelTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageListModel.ejs'),'utf-8')
+    // let modelResult = ejs.render(modelTtemplate, answers);
+    // fs.writeFileSync(path.resolve(cwd,`./src/models/_template/template.js`),modelResult,'utf-8')
+    //
+    //
+    // console.log(`\n\nmodel 和页面已经生成并分别放置于 src/models/template  src/routes/template 目录下 \n根据model配置，在config.js中添加接口配置 \n,配置router`);
+});
+
 
 
 function getNow() {
