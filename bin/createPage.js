@@ -29,7 +29,7 @@ const commonConfig = require('../lib/commonConfig');
  *
  * **/
 
- 
+
 // //确保该命令在项目目录中运行
 // if(!isUsingInValiedProject()){
 //     return false;
@@ -86,47 +86,41 @@ const createInputs = (config,result)=>{
     return new Promise((resolve,reject)=>{
         let prompts = new Rx.Subject()
         Inquirer.prompt(prompts).then((data)=>{
-            resolve({
-                ...result,
-                ...data
-            });
+            if(config === pageTypeConfig){
+                result.pages = result.pages || []
+                result.pages.push(data)
+                resolve(data.nextPage ? createInputs( pageTypeConfig ,result) : result); 
+            }else{
+                resolve({
+                    ...result,
+                    ...data
+                });
+            }
         });
         (config||[]).map(_=>prompts.next(_));
         prompts.complete();
     });
 }
-
-//页面参数收集
-const createPages = (config,result)=>{
-    return new Promise((resolve,reject)=>{
-        let prompts = new Rx.Subject()
-        Inquirer.prompt(prompts).then((data)=>{
-            result.pages =result.pages || []
-            result.pages.push(data)
-            
-            resolve(data.nextPage ? createPages( pageTypeConfig ,result) : result); 
-        });
-        (config||[]).map(_=>prompts.next(_));
-        prompts.complete();
-    });
-}
-
-
 
 createInputs(modelNameInputConfig,{}).then((data)=>{// 输入modelName后，进入生成页面配置
     console.log('data:',data);
-    return createPages(pageTypeConfig,data)
+    return createInputs(pageTypeConfig,data)
 }).then((data)=>{// 生成公共参数
     return createInputs(commonConfig,data)
     console.log('data2:',data);
 }).then((data)=>{//最终的配置参数 生成页面配置文件
-    console.log('页面配置参数如下:\n',chalk.bgRed.black(JSON.stringify(data,null,2)));
-    return data;
-})
+    console.log(chalk.red('\n页面配置参数如下:\n'),chalk.blue(JSON.stringify(data,null,2)));
+    return createInputs([{
+        type:'confirm',
+        name:'confirmCreate',
+        message:'是否为此配置生成页面？',
+    }],data)
+}).then((data)=>{
+    console.log('finaly data:',data);
+});
 
 
 
-// At some point in the future, push new questions
 
 // prompts.next(
 //     {
@@ -180,71 +174,6 @@ createInputs(modelNameInputConfig,{}).then((data)=>{// 输入modelName后，进�
 //         },
 //     }
 // );
-
-
-// prompts.next({
-//     type:'expand',
-//     name:'type',
-//     message:'请选择你要创建的页面类型',
-//     default:'l',
-//     choices:[
-//         {
-//             key: 'l',
-//             name: '列表页',
-//             value: 'list'
-//         },
-//         {
-//             key: 'm',
-//             name: '多Tab列表页',
-//             value: 'multi-list'
-//         }
-//     ]
-// });
-
-// prompts.complete();
-
-
-// //是否开启 简单模式
-// prompts.next(
-    // {
-    //     type:'confirm',//  boolean  二选一
-    //     name:'simple',
-    //     message:'是否开启简单模式（简单模式:不需要回调函数自行封装子组件）',
-    //     when:(prevValue)=>{ // 决定当前选项是否需要让用户处理 相当于 if 判断
-    //         return new Promise((resolve,reject)=>{
-    //             console.log('when prevValue:',prevValue);
-    //             // prompts.next(
-    //             //     {
-    //             //         type:'confirm',//  boolean  二选一
-    //             //         name:'simple1',
-    //             //         message:'123是否开启简单模式（简单模式:不需要回调函数自行封装子组件）',
-    //             //     }
-    //             // );
-    //             // prompts.complete();
-    //             resolve(true);
-    //         })
-
-    //     },
-    // }
-// );
-
-
-// //页面注释
-// prompts.next(
-    // {
-    //     type:'editor',
-    //     name:'comments',
-    //     message:'请输入页面注释',
-    // }
-// );
-// prompts.complete();
-//
-
-
-
-
-
-
 
 
 const config =[
