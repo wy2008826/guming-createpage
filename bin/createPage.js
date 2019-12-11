@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os')
 const Inquirer = require('inquirer');
+const commander = require('commander');
 const chalk = require('chalk');
 const ejs = require('ejs');
 const Rx = require('rxjs');
@@ -15,6 +16,10 @@ const commonConfig = require('../lib/commonConfig');
 const chalkMsg = require('../lib/chalkMsg');
 
 
+commander
+    .version(require('../package.json').version)
+    // .option('-p, --peppers', 'Add peppers')
+    .parse(process.argv);
 
 // 收集用户交互输入
 
