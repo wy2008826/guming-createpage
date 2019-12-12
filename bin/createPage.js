@@ -14,12 +14,13 @@ const modelNameInputConfig = require('../lib/modelNameInputConfig');
 const pageTypeConfig = require('../lib/pageTypeConfig');
 const commonConfig = require('../lib/commonConfig');
 const chalkMsg = require('../lib/chalkMsg');
-
+const createMainPageAndModel = require('../lib/createMainPageAndModel');
 
 commander
     .version(require('../package.json').version)
     // .option('-p, --peppers', 'Add peppers')
     .parse(process.argv);
+
 
 // 收集用户交互输入
 
@@ -63,6 +64,7 @@ const createInputs = (config,result)=>{
     });
 }
 
+
 const start = (startData = {})=>{
     createInputs(modelNameInputConfig,startData).then((data)=>{// 输入modelName后，进入生成页面配置
         return createInputs(pageTypeConfig,data)
@@ -77,24 +79,7 @@ const start = (startData = {})=>{
             }
         ],data);
     }).then((data)=>{
-        console.log(chalk.red('\n页面配置参数如下:\n'),chalk.blue(JSON.stringify(data,null,2)));
-        const answers = {
-            ...data
-        }
-        //页面
-        const pageTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageTemplate.ejs'),'utf-8');
-        let pageResult = ejs.render(pageTtemplate, answers);
-        fs.writeFileSync(path.resolve(cwd,`./src/routes/_template/template.js`),pageResult,'utf-8')
-
-        //model
-        const modelTtemplate = fs.readFileSync(path.resolve(cwd,'./src/createPage/EjsTmp/PageListModel.ejs'),'utf-8')
-        let modelResult = ejs.render(modelTtemplate, answers);
-        fs.writeFileSync(path.resolve(cwd,`./src/models/_template/template.js`),modelResult,'utf-8')
-
-
-        console.log(chalkMsg.inputMsg(`\n\nmodel 和页面已经生成并分别放置于 src/models/template  src/routes/template 目录下 \n根据model配置，在config.js中添加接口配置 \n,配置router`));
-
-        process.exit(1)
+        createMainPageAndModel(data);//根据输入的配置项 读取模板文件 生成页面
     });
 }
 
