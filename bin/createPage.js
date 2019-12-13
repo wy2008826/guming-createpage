@@ -79,6 +79,7 @@ const start = (startData = {})=>{
             }
         ],data);
     }).then((data)=>{
+        console.log(chalk.red('\n页面配置参数如下:\n'),chalk.blue(JSON.stringify(data,null,2)));
         createMainPageAndModel(data);//根据输入的配置项 读取模板文件 生成页面
     });
 }
