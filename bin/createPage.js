@@ -79,7 +79,23 @@ const start = (startData = {})=>{
             }
         ],data);
     }).then((data)=>{
+        //为同类页面添加序号 便于生成对应模板数据
+        const pagesType = {};
+        (data.pages||[]).map((page,i)=>{
+            const {
+                type
+            } = page;
+            if(pagesType[type] === undefined){
+                pagesType[type] = 0
+            }else{
+                pagesType[type] = pagesType[type]+1;
+            }
+            page.typeIndex = pagesType[type]
+        });
+
+
         console.log(chalk.red('\n页面配置参数如下:\n'),chalk.blue(JSON.stringify(data,null,2)));
+
         createMainPageAndModel(data);//根据输入的配置项 读取模板文件 生成页面
     });
 }
