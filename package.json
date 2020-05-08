@@ -1,12 +1,13 @@
 {
   "name": "guming-createpage",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "create-page guming wy",
   "main": "./index.js",
   "author": "wy2008826",
   "license": "MIT",
   "bin": {
-    "page": "./bin/createPage.js"
+    "page": "./bin/createPage.js",
+    "create-subapp": "./bin/createSubapp/index.js"
   },
   "dependencies": {
     "chalk": "^3.0.0",
