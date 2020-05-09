@@ -7,7 +7,7 @@
   "license": "MIT",
   "bin": {
     "page": "./bin/createPage.js",
-    "create-subapp": "./bin/createSubapp/index.js"
+    "subapp": "./bin/createSubapp/index.js"
   },
   "dependencies": {
     "chalk": "^3.0.0",
