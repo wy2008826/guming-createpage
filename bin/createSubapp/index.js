@@ -59,14 +59,9 @@ program
         spinner_clone.stop();
 
         if(cloneResult){
-            // fs.rmdir(),(err)=>{
-            //     console.log(err,'git文件删除成功！');
-            // });
-            //修改项目中模板代码
 
+            //删除 项目中的 git仓库文件
             deleteFolder(path.resolve(process.cwd(),`./${projectname}/`,`.git`));
-
-
             spinner_clone.stop();
 
             //修改项目名称
