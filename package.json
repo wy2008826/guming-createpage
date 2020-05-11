@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
     "commander": "^4.0.0",
     "ejs": "^2.7.2",
     "inquirer": "^7.0.0",
+    "ora": "^4.0.4",
     "rxjs": "^6.5.3"
   }
 }
