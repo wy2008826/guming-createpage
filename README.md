@@ -17,3 +17,12 @@ yarn global add guming-createpage
 page
 
 ```
+
+
+#### 生成微前端子项目
+
+```
+yarn global add guming-createpage
+subapp init <projectname>
+
+```
