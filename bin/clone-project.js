@@ -123,8 +123,14 @@ program
             if(!isExist){ fs.mkdirSync(projectDir); }
             if(fs.existsSync(`${projectDir}/${projectName}`)){
                 console.log(`项目 ${projectName}已存在于  ${projectDir}/${projectName}`);
-                startProject().then((data)=>{
-                    console.log('data:',data);
+                startProject().then(async (data)=>{
+                    const {
+                        startProjectNow
+                    } = data;
+                    if(startProjectNow){
+                        await execCmd(`cd ${projectDir} ${isWindows ? '& c:':''} & npm start`);
+                    }
+
                 });
                 return ;
             }
@@ -138,6 +144,7 @@ program
             let npmInstall = await execCmd(`cd ${projectDir} ${isWindows ? '& c:':''} & npm i`);
             spinner_Install.stop();
             Tip.success('项目生成成功！');
+            return new Promise().resolve({})
         });
 
 
